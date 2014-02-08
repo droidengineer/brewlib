@@ -1,0 +1,36 @@
+# Project: brewlib
+# Makefile created by Dev-C++ 5.5.3
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+RES      = ../lib/obj/brewlib_private.res
+OBJ      = ../lib/obj/dllmain.o $(RES)
+LINKOBJ  = ../lib/obj/dllmain.o $(RES)
+LIBS     = -L"C:/Dev-Cpp/TDM-GCC-64/lib" -L"C:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/Users/bjames/Dropbox/brew/lib/common" -L"C:/Users/bjames/Dropbox/brew/lib/frontend" -L"C:/Users/bjames/Dropbox/brew/lib/backend" --no-export-all-symbols --add-stdcall-alias 
+INCS     = -I"C:/Dev-Cpp/TDM-GCC-64/include" -I"C:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Users/bjames/Dropbox/brew/lib/backend" -I"C:/Users/bjames/Dropbox/brew/lib/frontend" -I"C:/Users/bjames/Dropbox/brew/lib/backend"
+CXXINCS  = -I"C:/Dev-Cpp/TDM-GCC-64/include" -I"C:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"C:/Users/bjames/Dropbox/brew/lib/backend" -I"C:/Users/bjames/Dropbox/brew/lib/frontend" -I"C:/Users/bjames/Dropbox/brew/lib/backend"
+BIN      = brewlib.dll
+CXXFLAGS = $(CXXINCS) -march=native -DBUILDING_DLL=1
+CFLAGS   = $(INCS) -march=native -DBUILDING_DLL=1
+RM       = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+DLLWRAP   = dllwrap.exe
+DEFFILE   = libbrewlib.def
+STATICLIB = libbrewlib.a
+
+$(BIN): $(LINKOBJ)
+	$(DLLWRAP) --output-def $(DEFFILE) --driver-name c++ --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)
+
+../lib/obj/dllmain.o: dllmain.cpp
+	$(CPP) -c dllmain.cpp -o ../lib/obj/dllmain.o $(CXXFLAGS)
+
+../lib/obj/brewlib_private.res: brewlib_private.rc 
+	$(WINDRES) -i brewlib_private.rc --input-format=rc -o ../lib/obj/brewlib_private.res -O coff 
